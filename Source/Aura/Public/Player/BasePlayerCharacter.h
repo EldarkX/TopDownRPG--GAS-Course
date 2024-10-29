@@ -25,6 +25,7 @@ public:
 
 private:
 	void InitAbilityActorInfo();
+	void InitPlayerHUD() const;
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category="BasePlayerCharacter")

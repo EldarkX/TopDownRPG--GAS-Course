@@ -9,7 +9,10 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Player/BasePlayerController.h"
 #include "Player/BasePlayerState.h"
+#include "UI/HUDs/BaseHUD.h"
+#include "UI/WidgetController/WidgetController.h"
 
 ABasePlayerCharacter::ABasePlayerCharacter()
 {
@@ -35,6 +38,7 @@ void ABasePlayerCharacter::PossessedBy(AController* NewController)
 
 	/* Init ability actor info for the Server */
 	InitAbilityActorInfo();
+	InitPlayerHUD();
 }
 
 void ABasePlayerCharacter::OnRep_PlayerState()
@@ -43,6 +47,7 @@ void ABasePlayerCharacter::OnRep_PlayerState()
 
 	/* Init ability actor info for the Client */
 	InitAbilityActorInfo();
+	InitPlayerHUD();
 }
 
 void ABasePlayerCharacter::InitAbilityActorInfo()
@@ -52,4 +57,20 @@ void ABasePlayerCharacter::InitAbilityActorInfo()
 	BasePlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(BasePlayerState, this);
 	AbilitySystemComponent = CastChecked<UBaseAbilitySystemComponent>(BasePlayerState->GetAbilitySystemComponent());
 	AttributeSet = BasePlayerState->GetAttributeSet();
+}
+
+void ABasePlayerCharacter::InitPlayerHUD() const
+{
+	if (auto* BasePlayerController = GetController<ABasePlayerController>())
+	{
+		if (ABaseHUD* BaseHUD = BasePlayerController->GetHUD<ABaseHUD>())
+		{
+			BaseHUD->InitPlayerScreen(FWidgetControllerParams(
+				BasePlayerController,
+				GetPlayerState<ABasePlayerState>(),
+				AbilitySystemComponent,
+				AttributeSet)
+				);
+		} 
+	}
 }

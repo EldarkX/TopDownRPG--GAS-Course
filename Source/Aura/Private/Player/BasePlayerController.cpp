@@ -24,11 +24,12 @@ void ABasePlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	check(BaseInputContext); // because it's severe problem to have it not set
-
-	UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem =
-		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(EnhancedInputLocalPlayerSubsystem);
-	EnhancedInputLocalPlayerSubsystem->AddMappingContext(BaseInputContext, 0);
+	
+	if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		EnhancedInputLocalPlayerSubsystem->AddMappingContext(BaseInputContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Type::Default;
