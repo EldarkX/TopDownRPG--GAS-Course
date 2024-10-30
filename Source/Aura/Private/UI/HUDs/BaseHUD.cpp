@@ -15,6 +15,10 @@ void ABaseHUD::InitPlayerScreen(const FWidgetControllerParams& InWidgetControlle
 	PlayerScreenWidgetController->SetWidgetControllerParams(InWidgetControllerParams);
 	
 	PlayerScreenWidget = CreateWidget<UBaseUserWidget>(GetWorld(), PlayerScreenWidgetClass);
-	PlayerScreenWidget->AddToViewport();
 	PlayerScreenWidget->SetWidgetController(PlayerScreenWidgetController);
+
+	PlayerScreenWidgetController->BindDependencies();
+	PlayerScreenWidgetController->BroadcastInitialValues();
+	
+	PlayerScreenWidget->AddToViewport();
 }

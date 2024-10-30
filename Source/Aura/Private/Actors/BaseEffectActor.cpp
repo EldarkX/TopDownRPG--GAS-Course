@@ -37,6 +37,7 @@ void ABaseEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 			Cast<UBaseAttributeSet>(AbilitySystemComponent->GetAttributeSet(UBaseAttributeSet::StaticClass())))
 		{
 			const_cast<UBaseAttributeSet*>(BaseAttributeSet)->SetHealth(BaseAttributeSet->GetHealth() + 25.f);
+			const_cast<UBaseAttributeSet*>(BaseAttributeSet)->SetMana(BaseAttributeSet->GetMana() - 25.f);
 		}
 		Destroy();
 	}

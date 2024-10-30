@@ -6,7 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "WidgetController.generated.h"
 
-class UAttributeSet;
+class UBaseAttributeSet;
 class UAbilitySystemComponent;
 class ABasePlayerState;
 class ABasePlayerController;
@@ -21,7 +21,7 @@ struct FWidgetControllerParams
 		ABasePlayerController* InPlayerController,
 		ABasePlayerState* InPlayerState,
 		UAbilitySystemComponent* InAbilitySystemComponent,
-		UAttributeSet* InAttributeSet) :
+		UBaseAttributeSet* InAttributeSet) :
 	PlayerController(InPlayerController),
 	PlayerState(InPlayerState),
 	AbilitySystemComponent(InAbilitySystemComponent),
@@ -37,7 +37,7 @@ struct FWidgetControllerParams
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WidgetController")
-	TObjectPtr<UAttributeSet> AttributeSet;
+	TObjectPtr<UBaseAttributeSet> AttributeSet;
 };
 
 UCLASS()
@@ -48,6 +48,9 @@ class AURA_API UWidgetController : public UObject
 public:
 	UFUNCTION(BlueprintCallable, Category = "WidgetController")
 	void SetWidgetControllerParams(const FWidgetControllerParams& InWidgetControllerParams);
+
+	virtual void BroadcastInitialValues() {}
+	virtual void BindDependencies() {}
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
