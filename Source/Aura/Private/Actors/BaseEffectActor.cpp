@@ -2,48 +2,32 @@
 
 #include "Actors/BaseEffectActor.h"
 
-#include "AbilitySystemInterface.h"
-#include "AbilitySystem/AttributeSet/BaseAttributeSet.h"
-#include "Components/SphereComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 ABaseEffectActor::ABaseEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	SetRootComponent(Mesh);
-	
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetupAttachment(GetRootComponent());
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot")));
 }
 
 void ABaseEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlap);
-	Sphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 }
 
-void ABaseEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABaseEffectActor::ApplyGameplayEffectToTarget(AActor* EffectTarget,
+	const TSubclassOf<UGameplayEffect>& GameplayEffectClass)
 {
-	//TODO: Change this to apply a gameplay effect. For now, using  const_cast as a hack...
-	if (IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OtherActor))
+	check(GameplayEffectClass); // it has to be set
+	
+	if (UAbilitySystemComponent* EffectTargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectTarget))
 	{
-		UAbilitySystemComponent* AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();
-		check(AbilitySystemComponent);
-		if (const UBaseAttributeSet* BaseAttributeSet =
-			Cast<UBaseAttributeSet>(AbilitySystemComponent->GetAttributeSet(UBaseAttributeSet::StaticClass())))
-		{
-			const_cast<UBaseAttributeSet*>(BaseAttributeSet)->SetHealth(BaseAttributeSet->GetHealth() + 25.f);
-			const_cast<UBaseAttributeSet*>(BaseAttributeSet)->SetMana(BaseAttributeSet->GetMana() - 25.f);
-		}
-		Destroy();
+		FGameplayEffectContextHandle EffectContextHandle = EffectTargetASC->MakeEffectContext();
+		EffectContextHandle.AddSourceObject(this);
+		const FGameplayEffectSpecHandle& GameplayEffectSpecHandle = EffectTargetASC->MakeOutgoingSpec(GameplayEffectClass,
+			1.f, EffectContextHandle);
+		EffectTargetASC->ApplyGameplayEffectSpecToSelf(*GameplayEffectSpecHandle.Data);
 	}
-}
-
-void ABaseEffectActor::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
 }
