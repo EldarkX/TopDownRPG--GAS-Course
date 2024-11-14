@@ -71,4 +71,7 @@ private:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category = "BaseEffectActor")
 	TArray<FCustomGameplayEffect> CustomGameplayEffects;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess=true), Category = "BaseEffectActor")
+	float ActorLevel = 1.f;
 };

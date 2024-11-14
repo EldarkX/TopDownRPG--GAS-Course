@@ -31,7 +31,7 @@ void ABaseEffectActor::ApplyGameplayEffectToTarget(AActor* EffectTarget, FCustom
 		FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
 		EffectContextHandle.AddSourceObject(this);
 		const FGameplayEffectSpecHandle& GameplayEffectSpecHandle =
-			TargetASC->MakeOutgoingSpec(CustomGameplayEffect.GameplayEffectClass, 1.f, EffectContextHandle);
+			TargetASC->MakeOutgoingSpec(CustomGameplayEffect.GameplayEffectClass, ActorLevel, EffectContextHandle);
 
 		const auto& ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*GameplayEffectSpecHandle.Data);
 

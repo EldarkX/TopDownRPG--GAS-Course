@@ -42,8 +42,6 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	SetSourceProps(Data, SourceEffectProperties);
 	FEffectProperties TargetEffectProperties;
 	SetTargetProps(Data, TargetEffectProperties);
-
-
 }
 
 void UBaseAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
